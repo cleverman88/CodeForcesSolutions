@@ -1,0 +1,141 @@
+\\https://codeforces.com/contest/1191/problem/B
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+using namespace std;
+ 
+bool hasK(vector<pair<int, char>> arr) {
+ 
+    for (auto x : arr) {
+        int count = 0;
+        for (auto x2 : arr) {
+            if (x.first == x2.first && x.second == x2.second) {
+                count ++;
+            }
+        }
+        if (count >= 3) {
+            return true;
+        }
+    }
+    return false;
+}
+ 
+int maxMatches(vector<pair<int, char>> arr) {
+ 
+    int m = 0;
+    for (auto x : arr) {
+        int count = 0;
+        for (auto x2 : arr) {
+            if (x.first == x2.first && x.second == x2.second) {
+                count ++;
+            }
+        }
+        if (count > m) {
+            m = count;
+        }
+    }
+    return m;
+}
+ 
+bool compK(pair<int, char> i, pair<int, char> j) {
+    return i.first < j.first;
+}
+ 
+bool hasS(vector<pair<int, char>> arr) {
+    sort(arr.begin(), arr.end(), compK); // Ascending
+    for (int i = 0; i < arr.size(); i++) {
+        int c = 1;
+        int l = arr[i].first;
+        for (int j = i+1; j < arr.size(); j++) {
+            if (arr[i].second == arr[j].second) {
+                // If suits are the same
+                c++;
+                if (l + 1 == arr[j].first) {
+                    // If the difference is one
+                    l = arr[j].first;
+                    if (c >= 3) {
+                        // If 3 in a row 
+                        return true;
+                    }
+                }
+                else {
+                    // If difference is not 1
+                    break;
+                }
+            } 
+        }
+    }
+    return false;
+}
+ 
+int longestAsc(vector<pair<int, char>> arr) {
+    int m = 0;
+    sort(arr.begin(), arr.end(), compK); // Ascending
+    for (int i = 0; i < arr.size(); i++) {
+        int c = 1;
+        int l = arr[i].first;
+        for (int j = i+1; j < arr.size(); j++) {
+            if (arr[i].second == arr[j].second) {
+                // If suits are the same
+                c++;
+                if (l + 1 == arr[j].first) {
+                    // If the difference is one
+                    l = arr[j].first;
+                    if (c > m) {
+                        // If 3 in a row 
+                        m = c;
+                    }
+                } else {
+                    // If difference is not 1
+                    break;
+                }
+            } 
+        }
+    }
+    return m;
+}
+ 
+bool gapExists(vector<pair<int, char>> arr) {
+    sort(arr.begin(), arr.end(), compK); // Ascending
+    for (int i = 0; i < arr.size(); i++) {
+        int l = arr[i].first;
+        for (int j = i+1; j < arr.size(); j++) {
+            if (arr[i].second == arr[j].second) {
+                // Suits the same
+                if (arr[j].first - arr[i].first == 2) {
+                    // If the difference is 2
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+ 
+bool hasM(vector<pair<int, char>> arr) {
+    return hasK(arr) || hasS(arr);
+}
+ 
+int main() {
+    // Gets inputs
+    vector<pair<int, char>> N(3);
+    string a;
+    for (int i = 0; i < 3; i ++) {
+        cin >> a;
+        N[i] = {a[0]-'0', a[1]};
+    }
+ 
+    if (hasM(N)) {
+        cout << 0;
+    } else {
+        if (maxMatches(N) == 2 || longestAsc(N) == 2 || gapExists(N)) {
+            cout << 1;
+        } else {
+            cout << 2;
+        }
+    }
+ 
+    return 0;
+}
